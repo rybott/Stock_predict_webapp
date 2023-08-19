@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Portfolio</title>
+    
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">
+    <!--
+    <script src="application/javascript; version=1.7s"></script>
+    <script src="script.js"></script>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="stylesDashboard.css">-->
+    <style>
+        body{background-color: #242424;}
+
+        .Tikker{
+            color: #000;
+            padding-left: 5%;
+            padding-right: 5%;
+            width: 10em;
+            font-size: 35px;}
+        .Tickert{
+            color: cyan;
+            padding-top: 5%;
+            padding-left: 5%;
+            width: 20em;
+            font-size: 17px;
+            text-align: left;
+            padding-bottom: 1%;}
+        .box{
+            background-color: #000;
+            color: white;
+            border:  cyan solid thick;
+            padding: 5%;
+            margin: 5%;
+            font-size: 20px;}
+        .Predt{
+            font-size: 25px;}
+        .Prediction{
+            padding-top: 1%;
+            padding-bottom: 2%;
+            font-size: 35px;}
+        .analysis{
+            text-align: left;}
+
+    </style>
+    </head>
+    <body>
+
+        <nav class="navbar bg-body-tertiary" style="background-color: #0a0a0a; padding: 0%;">
+            <div class="container-fluid" style="background-color: #0a0a0a; margin: 0%;">
+                <a class="navbar-brand" style="font-size: 35px; color: cyan;"><b><i>Stock Predictions Dashboard</i></b></a>
+                <ul class="nav nav-pills navbar-expand-lg justify-content-end">
+                    <li class="nav-item" >
+                        <a class="nav-link active" aria-current="page" href="/dashboard" style="background-color: navy;">Active</a>
+                    </li>
+                    <li class="nav-item" >
+                        <a class="nav-link" href="/data" style="color: rgb(66, 186, 255);">Data</a>
+                    </li>
+                    <li class="nav-item" >
+                        <a class="nav-link" href="#" style="color: rgb(66, 186, 255);">Directory</a>
+                    </li>
+                </ul>
+                
+            </div>
+        </nav>
+
+        <div class = "decorative_line" style="min-height: 2px; font-size: .5px; color: rgb(136, 132, 127); background-color:rgb(136, 132, 127) ;">12</div>
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, message_text in messages %}
+                <div class="alert alert-danger alert-dismissable fade show" role="alert">
+                    {{ message_text }}
+                    <button type="button" class="close" data-dismiss="alert">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+            {% endfor %}
+        {% endif %}
+        {% endwith %}
+
+        <div class="container-fluid text-center" style="color: #000;">
+            <div class="row">
+                <div class="col-lg-3 col-xs-1">
+                  <div class="Tickert"><i>Add a Ticker</i></div>
+                    <div class="Tikker">
+                      <form method="POST" style="display: flex; flex-direction: row; margin: 3%;">
+                        <input class="form-control form-control-lg" type="text" id="TiKer" name="TiKer" placeholder="Ticker" >
+                        <button type="submit" class="btn btn-light">Submit</button>   
+                      </form>
+                      <!--
+                      <form action="/stocks" method="post">
+                        <input type="text" name="TiKer">
+                        <input type="submit" value="Submit">
+                      </form>
+                       -->
+                    </div> 
+                      
+                     
+                      
+                    
+                  <div class="box">
+                      <div class="Predt">Model Prediction of close</div>
+                      <div class="Prediction">Increase</div>
+                      <div class="Confidence">Models Confidence: 10%</div>
+                      <div class="Tweet Sentiment">Tweet-Sentiment: Positive (Confidence)</div>
+                  </div>
+                  <div class="box">
+                      <div class="Predt">Technical Analysis</div>
+                      <div class="analysis">analysis</div>
+                      <div class="analysis">analysis</div>
+                      <div class="analysis">analysis</div>
+                      <div class="analysis">analysis</div>
+                      <div class="analysis">analysis</div>
+                      <div class="analysis">analysis</div>
+                  </div>
+                </div>
+
+                <div class="col-lg-7 col-xs-1">
+                    
+                </div>
+            </div>
+
+        </div>
+
+
+        
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-HwwvtgBNo3bZJJLYd8oVXjrBZt8cqVSpeBNS5n7C8IVInixGAoxmnlMuBnhbgrkm" crossorigin="anonymous"></script>
+        <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js" integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r" crossorigin="anonymous"></script>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.min.js" integrity="sha384-Rx+T1VzGupg4BHQYs2gCW9It+akI2MM/mndMCy36UVfodzcJcF0GGLxZIzObiEfa" crossorigin="anonymous"></script>
+
+    </body>
+</html>
