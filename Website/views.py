@@ -1,14 +1,11 @@
-from flask import Blueprint, render_template, request, flash, redirect, url_for, session
-import io
-import base64
-import matplotlib
-matplotlib.use('Agg')
-import matplotlib.pyplot as plt
-from PIL import Image
+from flask import Blueprint, render_template, request, flash, redirect, url_for, session, jsonify
+from dotenv import load_dotenv
+import os
+import asyncio
 
+load_dotenv()
 
-
-from Code.processing import Stock_Graph
+from Code.processing import *
 
 views = Blueprint('views', __name__)
 
@@ -21,6 +18,15 @@ views = Blueprint('views', __name__)
 # Budget (stored in auth)
 # Nutrition ( and password protected)
 
+@views.route('stock_data/<string:TICK>/<string:period>')
+def get_data(TICK, period):
+    TIKKER = ['TSLA', 'NOC', 'PG', 'TSM', 'VZ', 'BX', 'BA', 'AMD', 'CRM', 'COST', 'AMZN', 'GOOG', 'DIS', 'KO', 'META', 'INTC', 'MSFT']
+
+    if TICK not in TIKKER:
+        # handle the case where the session variable is not set
+        return jsonify(error="Ticker not set in session"), 400
+    data = Stock_Graph(TICK, period)  
+    return jsonify(data)
 
 
 # Dashboard
@@ -36,33 +42,28 @@ def dash():
             flash('This is not a known Ticker. Please refresh the screen to try another of these options: ', category='error')
         else:
             session['TIK'] = stock
+            # Current Price
+            session['current_price'] = Stock_Price(session['TIK'])
+            # News Articles
+            n = 6 
+            session['News'] = News(session['TIK'],n)
+            # Tweets
 
-            # Graph
-            plt.figure(figsize=(4, 1.5))
-            Stock_Graph(stock, '5d')  # This function currently doesn't return anything
-            img1 = io.BytesIO()
-            plt.savefig(img1, format='jpeg')
-            plt.close()  # Clear the current plot after saving
-            img1.seek(0)
-            with Image.open(img1) as im:
-                buffered = io.BytesIO()
-                im.save(buffered, format="JPEG", quality=20, optimize=True, progressive=True, exif=b'')
-                buffered.seek(0)
-                session['plot_url1'] = base64.b64encode(buffered.getvalue()).decode('utf8')
-
-            session['output_string1'] = Stock_Graph(stock, '10d')
 
         return redirect(url_for('views.dash'))
-
-    # Fetch the values from session with default values to avoid KeyError
-    TICKER = session.get('TIK', 'Default Ticker')
-    output_string = session.get('output_string1', '')
-    plot_url = session.get('plot_url1', None)
-
-    return render_template("dash.html", TICKER=TICKER, output_string=output_string, plot_url=plot_url)
-
+    return render_template("dash.html", TICKER=session.get('TIK', 'N/A'), 
+                       PRICE=session.get('current_price', '0.00'),
+                       NEWS=session.get('News', []))
 
 # Directory (Make sure to turn it into main page with '/' before makie other pages)
+
+
+
+
+
+
+
+
 @views.route('/directory', methods=['Get', 'Post'])
 def home():
     return  render_template("index.html")

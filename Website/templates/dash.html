@@ -7,11 +7,6 @@
     <title>Portfolio</title>
     
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">
-    <!--
-    <script src="application/javascript; version=1.7s"></script>
-    <script src="script.js"></script>
-    <link rel="stylesheet" href="styles.css">
-    <link rel="stylesheet" href="stylesDashboard.css">-->
     <style>
         body{background-color: #242424;}
 
@@ -19,16 +14,15 @@
             color: #000;
             padding-left: 5%;
             padding-right: 5%;
-            width: 10em;
-            font-size: 35px;}
+            height: 20px;
+            font-size: 20px;}
         .Tickert{
-            color: cyan;
-            padding-top: 5%;
-            padding-left: 5%;
+            color: white;
+            padding: 5% 0 1% 5%;
             width: 20em;
-            font-size: 17px;
-            text-align: left;
-            padding-bottom: 1%;}
+            font-size: 35px;
+            font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            text-align: left;}
         .box{
             background-color: #000;
             color: white;
@@ -37,15 +31,29 @@
             margin: 5%;
             font-size: 20px;}
         .Predt{
-            font-size: 25px;}
+            font-size: 20px;}
         .Prediction{
-            padding-top: 1%;
-            padding-bottom: 2%;
+            padding: 1% 0 2% 0;
             font-size: 35px;}
         .analysis{
             text-align: left;}
 
+        .newst{
+            text-align: center;
+            font-size: 25px;
+        }
+        .news_box{
+            color: antiquewhite; 
+            font-size: 20px; 
+            text-align: left; 
+            margin: 5% 0 0 5%;
+            background-color: #000;
+            border:  cyan solid thick;}
+
     </style>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-moment"></script>
     </head>
     <body>
 
@@ -60,7 +68,7 @@
                         <a class="nav-link" href="/data" style="color: rgb(66, 186, 255);">Data</a>
                     </li>
                     <li class="nav-item" >
-                        <a class="nav-link" href="#" style="color: rgb(66, 186, 255);">Directory</a>
+                        <a class="nav-link" href="/dashboard" style="color: rgb(66, 186, 255);">(Coming Soon)</a>
                     </li>
                 </ul>
                 
@@ -84,28 +92,39 @@
 
         <div class="container-fluid text-center" style="color: #000;">
             <div class="row">
-                <div class="col-lg-3 col-xs-1">
-                  <div class="Tickert"><i>Add a Ticker</i></div>
-                    <div class="Tikker">
-                      <form method="POST" style="display: flex; flex-direction: row; margin: 3%;">
-                        <input class="form-control form-control-lg" type="text" id="TiKer" name="TiKer" placeholder="Ticker" >
-                        <button type="submit" class="btn btn-light">Submit</button>   
+                <div class="col-lg-4 col-xs-1">
+                <div style="display: flex; flex-direction: row; margin: 3%;">
+                    <div class="Tickert"><b>{{TICKER}}</b></div>
+                    <div class="Tickert"><i>${{PRICE}}</i></div>
+                </div>
+                    <div class="form-selec" style="display: flex; flex-direction: row; margin: 3%; font-size: xx-small;" >
+                      <form method="POST" id="tickerForm">
+                        <select type="text" id="TiKer" name="TiKer" onchange="document.getElementById('tickerForm').submit();" style="font-size: small; background-color: #242424; border-style: none; color: aliceblue;">
+                            <option value="TSLA">Ticker Select</option>
+                            <option value="TSLA">TSLA</option>
+                            <option value="GOOG">GOOG</option>
+                            <option value="AMZN">AMZN</option>
+                            <option value="MSFT">MSFT</option>
+                            <option value="INTC">INTC</option>
+                            <option value="META">META</option>
+                            <option value="NOC">NOC</option>
+                            <option value="BA">BA</option>
+                            <option value="DIS">DIS</option>
+                            <option value="COST">COST</option>
+                            <option value="CRM">CRM</option>
+                            <option value="VZ">VZ</option>
+                            <option value="TSM">TSM</option>
+                            <option value="PG">PG</option>
+                            <option value="BX">BX</option>
+                            <option value="AMD">AMD</option>
+                            <option value="KO">KO</option>
+                        </select>
                       </form>
-                      <!--
-                      <form action="/stocks" method="post">
-                        <input type="text" name="TiKer">
-                        <input type="submit" value="Submit">
-                      </form>
-                       -->
                     </div> 
-                      
-                     
-                      
-                    
+                               
                   <div class="box">
-                      <div class="Predt">Model Prediction of close</div>
+                      <div class="Predt">Model Predictions</div>
                       <div class="Prediction">Increase</div>
-                      <div class="Prediction">{{TICKER}}</div>
                       <div class="Confidence">Models Confidence: 10%</div>
                       <div class="Tweet Sentiment">Tweet-Sentiment: Positive (Confidence)</div>
                   </div>
@@ -120,14 +139,20 @@
                   </div>
                 </div>
 
-                <div class="col-lg-7 col-xs-1">
-                    {% if plot_url %}
-                    <img src="data:image/png;base64,{{ plot_url }}" alt="Matplotlib Plot" style="height: 400px; width: 800px;">
-                    {% endif %}
-                    {% if output_string %}
-                    <p>{{ output_string }}</p>
-                    {% endif %}
-
+                <div class="col-lg-7 col-xs-1" style="padding: 1% 0 0 0;">
+                    <div class="stock_chart" style="width: 100%; height: auto;">
+                    <canvas id="myChart" width="350" height="150"></canvas>
+                    </div>
+                    <div>
+                        <div class = "news_box">
+                            <div class="newst">WebScrapped News Articles (Finviz)</div>
+                            <ul>
+                                {% for article in NEWS%}
+                                    <li><b>{{ article }}</b></li>
+                                {% endfor%}
+                            </ul>
+                        </div>
+                    </div>
                 </div>
             </div>
 
@@ -138,6 +163,41 @@
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-HwwvtgBNo3bZJJLYd8oVXjrBZt8cqVSpeBNS5n7C8IVInixGAoxmnlMuBnhbgrkm" crossorigin="anonymous"></script>
         <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js" integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r" crossorigin="anonymous"></script>
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.min.js" integrity="sha384-Rx+T1VzGupg4BHQYs2gCW9It+akI2MM/mndMCy36UVfodzcJcF0GGLxZIzObiEfa" crossorigin="anonymous"></script>
+        <script>
+           let stockTicker = "{{ session['TIK'] | default('TSLA') }}";  
+            fetch(`/stock_data/${stockTicker}/6mo`)
+            .then(response => response.json())
+            .then(data => {
+                const dates = data.map(item => item.date);
+                const closes = data.map(item => item.close);
 
+                const ctx = document.getElementById('myChart').getContext('2d');
+                new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: dates,
+                        datasets: [{
+                            label: 'Stock Close Price',
+                            data: closes,
+                            borderColor: 'rgba(75, 192, 192, 1)',
+                            borderWidth: 2
+                        }]
+                    },
+                    options: {
+                        scales: {
+                            x: {
+                                type: 'time',
+                                time: {
+                                    unit: 'day'
+                                }
+                            }
+                        }
+                    }
+                });
+            })
+            .catch(err => {
+                console.error("An error occurred:", err);
+            }); 
+        </script>
     </body>
 </html>
