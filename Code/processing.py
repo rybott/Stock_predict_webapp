@@ -74,7 +74,9 @@ async def search(ticker):
   async for tweet in api.search(q, limit = 500):
     Date.append(tweet.date)
     Content.append(tweet.rawContent)
-  
+
+async def get_tweet(ticker):
+  asyncio.run(search(ticker))
 
 
   
