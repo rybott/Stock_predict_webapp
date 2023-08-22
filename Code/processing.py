@@ -55,7 +55,8 @@ def News(ticker,n):
   headlines = [item[0] for item in headlines if item]
   return headlines[:n]
 
-nest_asyncio.apply()
+def ratio_analysis(ticker):
+  pass
 
 
 

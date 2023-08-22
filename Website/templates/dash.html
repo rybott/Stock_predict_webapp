@@ -59,7 +59,7 @@
 
         <nav class="navbar bg-body-tertiary" style="background-color: #0a0a0a; padding: 0%;">
             <div class="container-fluid" style="background-color: #0a0a0a; margin: 0%;">
-                <a class="navbar-brand" style="font-size: 35px; color: cyan;"><b><i>Stock Predictions Dashboard</i></b></a>
+                <a class="navbar-brand" style="font-size: 35px; color: cyan; font-family:'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;"><b>Stock Predictions Dashboard</b></a>
                 <ul class="nav nav-pills navbar-expand-lg justify-content-end">
                     <li class="nav-item" >
                         <a class="nav-link active" aria-current="page" href="/dashboard" style="background-color: navy;">Active</a>
@@ -122,11 +122,13 @@
                       </form>
                     </div> 
                                
-                  <div class="box">
+                  <div class="box" style="text-align:left ;">
                       <div class="Predt">Model Predictions</div>
                       <div class="Prediction">Increase</div>
                       <div class="Confidence">Models Confidence: 10%</div>
-                      <div class="Tweet Sentiment">Tweet-Sentiment: {{SENTI}} (Confidence: {{CONFI}})</div>
+                      <div class="Tweet Sentiment">Tweet-Sentiment: {{SENTI}}</div>
+                      <div class="Tweet Sentiment"> Confidence: {{CONFI}}</div>
+                      <div class="Statment" style=" text-align: center; font-size: small;">Currently down due to Twitter API lockdown</div>
                   </div>
                   <div class="box">
                       <div class="Predt">Technical Analysis</div>

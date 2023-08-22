@@ -1,16 +1,7 @@
 from flask import Flask
 from dotenv import load_dotenv
 import os
-import asyncio
-from twscrape import API, gather
 
-'''
-async def add():
-  api = API()
-  await api.pool.add_account(os.environ['TW_Usr1'],os.environ['TW_XPW'],os.environ['TW_EM1'],os.environ['TW_EMPW1'])
-  await api.pool.login_all()
-asyncio.run(add())
-'''
 load_dotenv()
 
 

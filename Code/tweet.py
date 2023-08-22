@@ -7,6 +7,16 @@ import pandas as pd
 import yfinance as yf
 from datetime import datetime, timedelta
 
+# This is what youll put your views code in if it works again one day
+'''
+Senti = Get_TW(stock,since)
+session['TW_Sentiment'] = Senti[0]
+session['TW_Score'] = Senti[1]
+
+'''
+
+
+
 
 nest_asyncio.apply()
 
