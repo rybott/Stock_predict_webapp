@@ -56,27 +56,10 @@ def News(ticker,n):
   return headlines[:n]
 
 nest_asyncio.apply()
-sentiment_pipeline = pipeline("sentiment-analysis", "distilbert-base-uncased-finetuned-sst-2-english")
 
-Date = []
-Content = []
-TSV = []
-Sentiment = []
 
-async def add():
-  api = API()
-  await api.pool.add_account(os.environ['TW_Usr1'],os.environ['TW_XPW'],os.environ['TW_EM1'],os.environ['TW_EMPW1'])
-  await api.pool.login_all()
 
-async def search(ticker):
-  api = API()
-  q = f"${ticker} len:en since:{since}_17:00:00_EST min_faves:20" # Since 5pm end of day yesterday
-  async for tweet in api.search(q, limit = 500):
-    Date.append(tweet.date)
-    Content.append(tweet.rawContent)
 
-async def get_tweet(ticker):
-  asyncio.run(search(ticker))
 
 
   

@@ -2,12 +2,19 @@ from flask import Blueprint, render_template, request, flash, redirect, url_for,
 from dotenv import load_dotenv
 import os
 import asyncio
-
+from twscrape import API, gather
+from twscrape.logger import set_log_level
+import nest_asyncio
+from transformers import pipeline
 load_dotenv()
 
 from Code.processing import *
+from Code.tweet import Get_TW
 
+since1 = datetime.today() - timedelta(days=1)
+since = since1.date()
 views = Blueprint('views', __name__)
+nest_asyncio.apply()
 
 # Views
 # Directory
@@ -48,12 +55,15 @@ def dash():
             n = 6 
             session['News'] = News(session['TIK'],n)
             # Tweets
-
+            Senti = Get_TW(stock,since)
+            session['TW_Sentiment'] = Senti[0]
+            session['TW_Score'] = Senti[1]
 
         return redirect(url_for('views.dash'))
     return render_template("dash.html", TICKER=session.get('TIK', 'N/A'), 
                        PRICE=session.get('current_price', '0.00'),
-                       NEWS=session.get('News', []))
+                       NEWS=session.get('News', []), SENTI=session.get('TW_Sentiment', 'N/A'),
+                       CONFI=session.get('TW_Score', 'N/A'))
 
 # Directory (Make sure to turn it into main page with '/' before makie other pages)
 
