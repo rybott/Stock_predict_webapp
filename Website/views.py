@@ -53,15 +53,63 @@ def dash():
             # Current Price
             session['current_price'] = Stock_Price(session['TIK'])
             # News Articles
-            n = 6 
+            n = 10
             session['News'] = News(session['TIK'],n)
             # Tweets
             # NOT AVALIABLE 
+            
+            # Technical Analysis
+            RA = ratio_analysis(session['TIK'])
+            print(RA)
+            session['High52'] = RA['High52']
+            session['low52'] = RA['low52']
+            session['Mid52'] = RA['Mid52']
+            session['DilutedEPS'] = RA['DilutedEPS']
+            session['QuarterlyRevGrowthYOY'] = RA['QuarterlyRevGrowthYOY']
+            session['AnalystTargetPrice'] = RA['AnalystTargetPrice']
+            session['netIncome'] = RA['netIncome']
+            session['Gross_Margin'] = RA["Gross_Margin"]
+            session['Current'] = RA['Current'] 
+            session['Quick'] = RA['Quick'] 
+            session['Debt_Equity'] = RA['Debt_Equity'] 
+            session['Debt_Ratio'] = RA['Debt_Ratio'] 
+            session['ROE'] = float(RA['netIncome']) / float(RA['totalShareholderEquity'])
+            session['ROA'] = float(RA['ebit']) / float(RA['totalAssets'])
+
+            '''
+            High52 
+            low52
+            DilutedEPS
+            QuarterlyRevGrowthYOY
+            AnalystTargetPrice
+            netIncome
+            Gross_Margin
+            Current
+            Quick
+            Debt_Equity
+            Debt_Ratio
+            '''
+
         return redirect(url_for('views.dash'))
-    return render_template("dash.html", TICKER=session.get('TIK', 'N/A'), 
-                       PRICE=session.get('current_price', '0.00'),
-                       NEWS=session.get('News', []), SENTI='N/A',
-                       CONFI='0.00')
+    return render_template("dash.html", 
+                           TICKER=session.get('TIK', 'N/A'), 
+                            PRICE=session.get('current_price', '0.00'),
+                            NEWS=session.get('News', []), SENTI='N/A',
+                            CONFI='0.00',
+                            High52= session.get('High52'),
+                            low52= session.get('low52'),
+                            DilutedEPS= session.get('DilutedEPS'),
+                            QuarterlyRevGrowthYOY= session.get('QuarterlyRevGrowthYOY'),
+                            AnalystTargetPrice= session.get('AnalystTargetPrice'),
+                            ebit= session.get('ebit'),
+                            netIncome= session.get('netIncome'),
+                            Gross_Margin= session.get('Gross_Margin'),
+                            ROE = session.get('ROE'),
+                            ROA = session.get('ROA'),
+                            Current= session.get('Current'),
+                            Quick= session.get('Quick'),
+                            Debt_Equity= session.get('Debt_Equity'),
+                            Debt_Ratio= session.get('Debt_Ratio'))
 
 # Directory (Make sure to turn it into main page with '/' before makie other pages)
 

@@ -130,27 +130,39 @@
                       <div class="Tweet Sentiment"> Confidence: {{CONFI}}</div>
                       <div class="Statment" style=" text-align: center; font-size: small;">Currently down due to Twitter API lockdown</div>
                   </div>
+                  
                   <div class="box">
                       <div class="Predt">Technical Analysis</div>
-                      <div class="analysis">analysis</div>
-                      <div class="analysis">analysis</div>
-                      <div class="analysis">analysis</div>
-                      <div class="analysis">analysis</div>
-                      <div class="analysis">analysis</div>
-                      <div class="analysis">analysis</div>
+                      <div style = "font-size:x-small ;"><p>Warning: Due to Free API Limitations this button can only be pressed once per minute</p></div>
+                      <div class="analysis">52 day high: {{High52}}</div>
+                      <div class="analysis">52 day low: {{low52}}</div>
+                      <div class="analysis">DilutedEPS: {{DilutedEPS}}</div>
+                      <div class="analysis">YOY Quarterly Rev Growth: {{QuarterlyRevGrowthYOY}}</div>
+                      <div class="analysis">AlphaVantage's Target Price: ${{AnalystTargetPrice}}</div>
+                      <div class="analysis">Ratio Analysis</div>
+                      <div class="analysis"><i>Profitability</i></div>
+                      <div class="analysis">Gross Margin: {{Gross_Margin}}</div>
+                      <div class="analysis">ROA: {{ROA}}</div>
+                      <div class="analysis">ROE: {{ROE}}</div>
+                      <div class="analysis"><i>Liquidity</i></div>
+                      <div class="analysis">Current Ratio: {{Current}}</div>
+                      <div class="analysis">Acid_Test: {{Quick}}</div>
+                      <div class="analysis"><i>Solvency</i></div>
+                      <div class="analysis">Debt to Equity: {{Debt_Equity}}</div>
+                      <div class="analysis">Debt Ratio: {{Debt_Ratio}}</div>
                   </div>
                 </div>
 
                 <div class="col-lg-7 col-xs-1" style="padding: 1% 0 0 0;">
                     <div class="stock_chart" style="width: 100%; height: auto;">
-                    <canvas id="myChart" width="350" height="150"></canvas>
+                    <canvas id="myChart" width="350" height="250"></canvas>
                     </div>
                     <div>
                         <div class = "news_box">
                             <div class="newst">WebScrapped News Articles (Finviz)</div>
                             <ul>
-                                {% for article in NEWS%}
-                                    <li><b>{{ article }}</b></li>
+                                {% for url, article in NEWS%}
+                                    <a style = "color: white; text-decoration: none;" href="{{urls}}"><li><b>{{ article }}</b></li></a>
                                 {% endfor%}
                             </ul>
                         </div>
@@ -190,7 +202,7 @@
                             x: {
                                 type: 'time',
                                 time: {
-                                    unit: 'day'
+                                    unit: 'month'
                                 }
                             }
                         }
