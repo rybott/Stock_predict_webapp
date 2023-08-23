@@ -1,5 +1,6 @@
 from flask import Blueprint, render_template, request, flash, redirect, url_for, session, jsonify
 from dotenv import load_dotenv
+from datetime import datetime, timedelta
 import os
 import asyncio
 '''
@@ -59,22 +60,42 @@ def dash():
             # NOT AVALIABLE 
             
             # Technical Analysis
-            RA = ratio_analysis(session['TIK'])
-            print(RA)
-            session['High52'] = RA['High52']
-            session['low52'] = RA['low52']
-            session['Mid52'] = RA['Mid52']
-            session['DilutedEPS'] = RA['DilutedEPS']
-            session['QuarterlyRevGrowthYOY'] = RA['QuarterlyRevGrowthYOY']
-            session['AnalystTargetPrice'] = RA['AnalystTargetPrice']
-            session['netIncome'] = RA['netIncome']
-            session['Gross_Margin'] = RA["Gross_Margin"]
-            session['Current'] = RA['Current'] 
-            session['Quick'] = RA['Quick'] 
-            session['Debt_Equity'] = RA['Debt_Equity'] 
-            session['Debt_Ratio'] = RA['Debt_Ratio'] 
-            session['ROE'] = float(RA['netIncome']) / float(RA['totalShareholderEquity'])
-            session['ROA'] = float(RA['ebit']) / float(RA['totalAssets'])
+
+         
+            session['analysis'] = request.form.get("Analysis")
+
+            if session['analysis'] == 'true':
+                session['High52'] = 'None'
+                session['low52'] = 'None'
+                session['Mid52'] = 'None'
+                session['DilutedEPS'] = 'None'
+                session['QuarterlyRevGrowthYOY'] = 'None'
+                session['AnalystTargetPrice'] = 'None'
+                session['netIncome'] = 'None'
+                session['Gross_Margin'] = 'None'
+                session['Current'] = 'None'
+                session['Quick'] = 'None'
+                session['Debt_Equity'] = 'None'
+                session['Debt_Ratio'] = 'None'
+                session['ROE'] = 'None'
+                session['ROA'] = 'None'
+            else:
+                get = request.form.get("TiKer")
+                RA = ratio_analysis(stock)
+                session['High52'] = RA['High52']
+                session['low52'] = RA['low52']
+                session['Mid52'] = RA['Mid52']
+                session['DilutedEPS'] = RA['DilutedEPS']
+                session['QuarterlyRevGrowthYOY'] = RA['QuarterlyRevGrowthYOY']
+                session['AnalystTargetPrice'] = RA['AnalystTargetPrice']
+                session['netIncome'] = RA['netIncome']
+                session['Gross_Margin'] = round(RA["Gross_Margin"]*100,2)
+                session['Current'] = round(RA['Current'],3) 
+                session['Quick'] = round(RA['Quick'],3)
+                session['Debt_Equity'] = round(RA['Debt_Equity'],3) 
+                session['Debt_Ratio'] = round(RA['Debt_Ratio'],3)
+                session['ROE'] = round(float(RA['netIncome']) / float(RA['totalShareholderEquity']),3)
+                session['ROA'] = round(float(RA['ebit']) / float(RA['totalAssets']),3)
 
             '''
             High52 
@@ -96,20 +117,20 @@ def dash():
                             PRICE=session.get('current_price', '0.00'),
                             NEWS=session.get('News', []), SENTI='N/A',
                             CONFI='0.00',
-                            High52= session.get('High52'),
+                            High52= round(session.get('High52'),2),
                             low52= session.get('low52'),
                             DilutedEPS= session.get('DilutedEPS'),
                             QuarterlyRevGrowthYOY= session.get('QuarterlyRevGrowthYOY'),
                             AnalystTargetPrice= session.get('AnalystTargetPrice'),
                             ebit= session.get('ebit'),
                             netIncome= session.get('netIncome'),
-                            Gross_Margin= session.get('Gross_Margin'),
-                            ROE = session.get('ROE'),
-                            ROA = session.get('ROA'),
-                            Current= session.get('Current'),
-                            Quick= session.get('Quick'),
-                            Debt_Equity= session.get('Debt_Equity'),
-                            Debt_Ratio= session.get('Debt_Ratio'))
+                            Gross_Margin= round(session.get('Gross_Margin')*100,2),
+                            ROE = round(session.get('ROE'),3),
+                            ROA = round(session.get('ROA'),3),
+                            Current= round(session.get('Current'),3),
+                            Quick= round(session.get('Quick'),3),
+                            Debt_Equity= round(session.get('Debt_Equity'),3),
+                            Debt_Ratio= round(session.get('Debt_Ratio'),3))
 
 # Directory (Make sure to turn it into main page with '/' before makie other pages)
 

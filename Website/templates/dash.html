@@ -77,6 +77,7 @@
 
         <div class = "decorative_line" style="min-height: 2px; font-size: .5px; color: rgb(136, 132, 127); background-color:rgb(136, 132, 127) ;">12</div>
 
+        <!--
         {% with messages = get_flashed_messages(with_categories=true) %}
         {% if messages %}
             {% for category, message_text in messages %}
@@ -89,6 +90,7 @@
             {% endfor %}
         {% endif %}
         {% endwith %}
+        -->
 
         <div class="container-fluid text-center" style="color: #000;">
             <div class="row">
@@ -132,11 +134,24 @@
                   </div>
                   
                   <div class="box">
-                      <div class="Predt">Technical Analysis</div>
+                    <div class="Predt">Technical Analysis</div>
+                    
+                    <form method="POST" id="submitForm">
+                        <input type="hidden" id="Analysis" name="Analysis">
+                        <button type="button" onclick="submitA()" style="font-size: small; background-color: #242424; border-style: none; color: aliceblue;">	Run</button>
+                        <script>
+                        function submitA() {
+                                document.getElementById('Analysis').value = 'true';
+                                document.getElementById('submitForm').submit();}
+                        </script>
+                    </form>
+
+
+
                       <div style = "font-size:x-small ;"><p>Warning: Due to Free API Limitations this button can only be pressed once per minute</p></div>
-                      <div class="analysis">52 day high: {{High52}}</div>
-                      <div class="analysis">52 day low: {{low52}}</div>
-                      <div class="analysis">DilutedEPS: {{DilutedEPS}}</div>
+                      <div class="analysis">52 day high: ${{High52}}</div>
+                      <div class="analysis">52 day low: ${{low52}}</div>
+                      <div class="analysis">DilutedEPS: ${{DilutedEPS}}</div>
                       <div class="analysis">YOY Quarterly Rev Growth: {{QuarterlyRevGrowthYOY}}</div>
                       <div class="analysis">AlphaVantage's Target Price: ${{AnalystTargetPrice}}</div>
                       <div class="analysis">Ratio Analysis</div>
