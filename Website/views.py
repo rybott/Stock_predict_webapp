@@ -59,10 +59,14 @@ def dash():
             # Tweets
             # NOT AVALIABLE 
             
-            # Technical Analysis
+            # Machine Learning Models
+            ml = ML(session['TIK'])
+            session ['Direction'] = "Increase" if ml[0] > 0 else "Decrease"
+            session ['Score'] = abs(ml[1])
 
-         
+            # Technical Analysis
             session['analysis'] = request.form.get("Analysis")
+            print(request.form.get("Analysis"))
 
             if session['analysis'] == 'true':
                 session['High52'] = 'None'
@@ -117,20 +121,22 @@ def dash():
                             PRICE=session.get('current_price', '0.00'),
                             NEWS=session.get('News', []), SENTI='N/A',
                             CONFI='0.00',
-                            High52= round(session.get('High52'),2),
+                            High52= session.get('High52'),
                             low52= session.get('low52'),
                             DilutedEPS= session.get('DilutedEPS'),
                             QuarterlyRevGrowthYOY= session.get('QuarterlyRevGrowthYOY'),
                             AnalystTargetPrice= session.get('AnalystTargetPrice'),
                             ebit= session.get('ebit'),
                             netIncome= session.get('netIncome'),
-                            Gross_Margin= round(session.get('Gross_Margin')*100,2),
-                            ROE = round(session.get('ROE'),3),
-                            ROA = round(session.get('ROA'),3),
-                            Current= round(session.get('Current'),3),
-                            Quick= round(session.get('Quick'),3),
-                            Debt_Equity= round(session.get('Debt_Equity'),3),
-                            Debt_Ratio= round(session.get('Debt_Ratio'),3))
+                            Gross_Margin= session.get('Gross_Margin'),
+                            ROE = session.get('ROE'),
+                            ROA = session.get('ROA'),
+                            Current= session.get('Current'),
+                            Quick= session.get('Quick'),
+                            Debt_Equity= session.get('Debt_Equity'),
+                            Debt_Ratio= session.get('Debt_Ratio'),
+                            Direction= session.get('Direction'),
+                            Score = session.get('Score'))
 
 # Directory (Make sure to turn it into main page with '/' before makie other pages)
 

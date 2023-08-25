@@ -18,15 +18,15 @@
             font-size: 20px;}
         .Tickert{
             color: white;
-            padding: 5% 0 1% 5%;
-            width: 20em;
+            padding: 5% 5% 1% 0%;
             font-size: 35px;
             font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            text-align: left;}
+            text-align: center;}
         .box{
             background-color: #000;
             color: white;
             border:  cyan solid thick;
+            text-align: left;
             padding: 5%;
             margin: 5%;
             font-size: 20px;}
@@ -46,9 +46,34 @@
             color: antiquewhite; 
             font-size: 20px; 
             text-align: left; 
-            margin: 5% 0 0 5%;
+            margin: 0% 0 0 0%;
             background-color: #000;
             border:  cyan solid thick;}
+        @media (max-width: 1000px) {
+            .news_box{
+                margin: 5%;
+            }
+        }
+
+        .stocktitle{
+            display: flex; 
+            flex-direction: row; 
+            width:fit-content;
+            justify-content: left;
+            margin: 3% 0 0 5%;
+            padding: .5% 6% 1% 6%;
+            justify-content: center;
+            background-color: #000;
+            text-align: center;
+            border:  cyan solid thick;}
+
+        @media (max-width: 1000px) {
+            .stocktitle{
+                margin: auto;
+                justify-content: center;}
+            .formselec{
+                justify-content: center;}
+        }
 
     </style>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
@@ -59,7 +84,7 @@
 
         <nav class="navbar bg-body-tertiary" style="background-color: #0a0a0a; padding: 0%;">
             <div class="container-fluid" style="background-color: #0a0a0a; margin: 0%;">
-                <a class="navbar-brand" style="font-size: 35px; color: cyan; font-family:'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;"><b>Stock Predictions Dashboard</b></a>
+                <a class="navbar-title" style="text-decoration: none;font-size: 35px; color: cyan; font-family:'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;"><b>Stock Predictions Dashboard</b></a>
                 <ul class="nav nav-pills navbar-expand-lg justify-content-end">
                     <li class="nav-item" >
                         <a class="nav-link active" aria-current="page" href="/dashboard" style="background-color: navy;">Active</a>
@@ -94,10 +119,12 @@
 
         <div class="container-fluid text-center" style="color: #000;">
             <div class="row">
-                <div class="col-lg-4 col-xs-1">
-                <div style="display: flex; flex-direction: row; margin: 3%;">
+                <div class="col-lg-4 col-xs-1" style="text-align: center;">
+                <div style="justify-content: center;">
+                <div class="stocktitle">
                     <div class="Tickert"><b>{{TICKER}}</b></div>
                     <div class="Tickert"><i>${{PRICE}}</i></div>
+                </div>
                 </div>
                     <div class="form-selec" style="display: flex; flex-direction: row; margin: 3%; font-size: xx-small;" >
                       <form method="POST" id="tickerForm">
@@ -126,8 +153,8 @@
                                
                   <div class="box" style="text-align:left ;">
                       <div class="Predt">Model Predictions</div>
-                      <div class="Prediction">Increase</div>
-                      <div class="Confidence">Models Confidence: 10%</div>
+                      <div class="Prediction">{{Direction}}</div>
+                      <div class="Confidence">Models Confidence: {{Score}}</div>
                       <div class="Tweet Sentiment">Tweet-Sentiment: {{SENTI}}</div>
                       <div class="Tweet Sentiment"> Confidence: {{CONFI}}</div>
                       <div class="Statment" style=" text-align: center; font-size: small;">Currently down due to Twitter API lockdown</div>
@@ -135,16 +162,32 @@
                   
                   <div class="box">
                     <div class="Predt">Technical Analysis</div>
+
+                    <form method="POST" id="submitForm">
+                        <input type="hidden" id="Analysis" name="Analysis" value="false">
+                        <button type="button" onclick="submitA();" style="font-size: small; background-color: #242424; border-style: none; color: aliceblue;">Run</button>
+                        <script>
+                            window.onload = function() {
+                                document.getElementById('Analysis').value = 'false';
+                            }
                     
+                            function submitA() {
+                                document.getElementById('Analysis').value = 'true';
+                                document.getElementById('submitForm').submit();
+                            }
+                        </script>
+                    </form>
+                    
+                    <!--
                     <form method="POST" id="submitForm">
                         <input type="hidden" id="Analysis" name="Analysis">
-                        <button type="button" onclick="submitA()" style="font-size: small; background-color: #242424; border-style: none; color: aliceblue;">	Run</button>
+                        <button type="button" onclick="document.getElementById('Analysis').value = 'true'; document.getElementById('submitform').submit();" style="font-size: small; background-color: #242424; border-style: none; color: aliceblue;">	Run</button>
                         <script>
                         function submitA() {
                                 document.getElementById('Analysis').value = 'true';
                                 document.getElementById('submitForm').submit();}
                         </script>
-                    </form>
+                    </form> -->
 
 
 

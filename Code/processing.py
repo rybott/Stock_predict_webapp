@@ -14,8 +14,10 @@ from twscrape.logger import set_log_level
 import nest_asyncio
 from transformers import pipeline
 # Fundamental Data
-import json
 import requests
+# Machine Learning
+import pickle
+
 
 # Initialize Common Variables
 start = datetime.today() - timedelta(days=4)
@@ -150,3 +152,85 @@ def ratio_analysis(ticker):
                   "Quick":Quick ,"Debt_Equity":Debt_Equity ,"Debt_Ratio":Debt_Ratio}
 
   return AnalysisDict
+
+# Machine Learning
+def ML(ticker):
+  def get_sp500():
+    tick = yf.Ticker(ticker)
+    df = tick.history(period="5d")
+
+    df['Predict'] = (df.Close - df.Open)/df.Open
+    df['Closediff'] = (df.Close - df.Close.shift(1)) / df.Close.shift(1)
+    df['Open3'] = df.Open.shift(3)
+    df['Volume3'] = df.Volume.shift(3)
+    df['Closediff3'] = df.Closediff.shift(3)
+    df['Change3'] = df.Predict.shift(3)
+    df['Open2'] = df.Open.shift(2)
+    df['Volume2'] = df.Volume.shift(2)
+    df['Closediff2'] = df.Closediff.shift(2)
+    df['Change2'] = df.Predict.shift(2)
+    df['Open1'] = df.Open.shift(1)
+    df['Volume1'] = df.Volume.shift(1)
+    df['Closediff1'] = df.Closediff.shift(1)
+    df['Change1'] = df.Predict.shift(1)
+
+
+
+    old_clean = df.drop(["Dividends","Stock Splits","Close","Low","High"], axis=1)
+    df_clean = old_clean[['Open', 'Closediff', 'Volume', 'Predict',
+                          'Open3', 'Volume3', 'Closediff3', 'Change3',
+                          'Open2', 'Volume2', 'Closediff2', 'Change2',
+                          'Open1', 'Volume1', 'Closediff1', 'Change1']]
+
+    X = df_clean.tail(1)
+    X = X.drop(['Predict'], axis=1)
+
+    loaded_model = 'Code/Models/SP500model2'
+    model = pickle.load(open(loaded_model, 'rb'))
+    y_pred_sp = model.predict(X)
+
+    return [y_pred_sp]
+
+  def get_stock():
+    TIK = ticker
+    tick = yf.Ticker(TIK)
+    df = tick.history(period="5d")
+
+    df['Predict'] = (df.Close - df.Open)/df.Open
+    df['Closediff'] = (df.Close - df.Close.shift(1)) / df.Close.shift(1)
+    df['Open3'] = df.Open.shift(3)
+    df['Volume3'] = df.Volume.shift(3)
+    df['Closediff3'] = df.Closediff.shift(3)
+    df['Change3'] = df.Predict.shift(3)
+    df['Open2'] = df.Open.shift(2)
+    df['Volume2'] = df.Volume.shift(2)
+    df['Closediff2'] = df.Closediff.shift(2)
+    df['Change2'] = df.Predict.shift(2)
+    df['Open1'] = df.Open.shift(1)
+    df['Volume1'] = df.Volume.shift(1)
+    df['Closediff1'] = df.Closediff.shift(1)
+    df['Change1'] = df.Predict.shift(1)
+
+    old_clean = df.drop(["Dividends","Stock Splits","Close","Low","High"], axis=1)
+    df_clean = old_clean[['Open', 'Closediff', 'Volume', 'Predict',
+                          'Open3', 'Volume3', 'Closediff3', 'Change3',
+                          'Open2', 'Volume2', 'Closediff2', 'Change2',
+                          'Open1', 'Volume1', 'Closediff1', 'Change1']]
+
+
+
+    X = df_clean.tail(1).copy()
+    X['sp_rf'] = get_sp500()
+    X = X.drop(['Predict'], axis=1)
+
+    loaded_model = 'Code/Models/Final_RF_model'
+    model = pickle.load(open(loaded_model, 'rb'))
+
+    y_pred_st = model.predict(X)
+
+    return y_pred_st
+
+  Direction = 1 if get_stock() > 0 else 0
+  Score = get_stock()[0]
+
+  return [Direction, Score]
