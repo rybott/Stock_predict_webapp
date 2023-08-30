@@ -33,8 +33,21 @@ Installation and Setup are simple, as one only needs to download all of the rele
 - **Web Scraping**: Finviz for news articles.
 
 ## Packages Used
+# Main Packages
+- **Pandas**: Data manipulation
+- **datetime**: Time calculations
+- **dotenv**: For use in an application to keep passwords and API keys secure
+- **Flask**: Blueprint, render_template, request, flash, redirect, url_for, session, jsonify
+- **os**: Used for env variables
+# Financial data
+- **Requests**: Webscraping
+- **BeautifulSoup**: HTML Parsing
+# Machine Learning
+- **Pickle**: Load Serialized ML models
+# Unused for Twitter
+- **twscrape**: Special Thanks to the creator of twscrape, with a very clever way of working around the twitter API before that stopped working too.
+- **trasnformers**: I wanted to use a hugging face transformer to run the sentiment analysis
 
-- 
 
 ## Warnings/Disclaimers
 
