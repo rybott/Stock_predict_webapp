@@ -13,7 +13,8 @@ This project aimed at creating machine learning models to predict whether the st
 - **Financial Information Display**: Retrieves and displays financial data of the selected company from the Alpha Vantage API, including ratio and technical analyses.
 
 ![Flow Chart](Original_FlowChart.png)
-*This Flow Chart captures the flow of information including what the project would have looked liked with the inclusion of Tweet Data*
+*This Flow Chart captures the flow of information including what the project would have looked liked with the inclusion of Tweet Data.*
+*Some of the Information is no longer relevant but it illistrates the original Design process.*
 
 ## Ratio/Technical Analysis
 - Calculated from the Alpha Vantage API
