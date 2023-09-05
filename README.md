@@ -12,6 +12,9 @@ This project aimed at creating machine learning models to predict whether the st
 - **News Feed**: Scraped news articles related to the selected stock from the Finviz website.
 - **Financial Information Display**: Retrieves and displays financial data of the selected company from the Alpha Vantage API, including ratio and technical analyses.
 
+![Flow Chart](Original_FlowChart.png)
+*This Flow Chart captures the flow of information including what the project would have looked liked with the inclusion of Tweet Data
+
 ## Ratio/Technical Analysis
 - Calculated from the Alpha Vantage API
 ### Earnings
