@@ -6,7 +6,8 @@ This project aimed at creating machine learning models to predict whether the st
 
 ## Features
 
-- **Stock Price Prediction**: Predictions on whether the stock price will increase or decrease.
+- **Stock Price Prediction**: Predictions on whether the stock price will increase or decrease using Random Forrest Models
+    - Models: https://drive.google.com/drive/folders/19vux8FZZAZgi8g82mblrMik3Hk173cS7?usp=sharing
 - **Stock Selection**: Option to choose from one of 17 stock tickers that the models were trained on.
 - **Stock Historical Data**: Graphs and displays stock information from the past 6 months using the Yahoo Finance API.
 - **News Feed**: Scraped news articles related to the selected stock from the Finviz website.
