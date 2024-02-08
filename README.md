@@ -72,7 +72,7 @@ Installation and Setup are simple, as one only needs to download all of the rele
 - **trasnformers**: I wanted to use a hugging face transformer to run the sentiment analysis
 
 
-## Warnings/Disclaimers
+## Disclaimers
 
 1. **Twitter API Limitation**: Initially, this project was designed to incorporate tweets into the machine learning models and the web application. However, due to the termination of free services on the Twitter API, this feature is unavailable.
 2. **Educational Purpose Only**: This project was designed and developed as a learning experience. The predictions and data provided should **not** be used for actual financial decision-making.
