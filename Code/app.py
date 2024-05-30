@@ -6,7 +6,7 @@ stream = CryptoDataStream("PKW7DQECIZLURTL0KOAA","tkNL2VUeS6lSVtWT6BosI4nfm0sgZw
 async def handle_trade(data):
     print(data)
 
-stream.subscribe_trades(handle_trade, "BTC/USD")
+stream.subscribe_trades(handle_trade, "ETH/USD")
 
 stream.run()
 
