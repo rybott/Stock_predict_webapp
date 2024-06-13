@@ -23,6 +23,9 @@ class TradeBuffer:
     def dump_data(self, trade):
         open('data.txt', 'a').write(f"{trade},")
 
+    def get_data(self):
+        return self.buffer
+
 Buffer = TradeBuffer()
 
 # Function to process each trade
@@ -31,20 +34,21 @@ async def process_trade(trade):
     t1 = time.time()
     Buffer.append(trade)
     Buffer.dump_data(trade)
+    
+    df = Buffer.get_data
+
+    if len(df) >=15:
+        await asyncio.gather(
+                calculate_moving_average(trade),
+                calculate_rsi(trade),
+                calculate_bollinger_bands(trade)
+        )
+    # Run Trade
+    #await asyncio.run()
+
     t2 = time.time()- t1
     print(t2)
 
-    await asyncio.gather(
-        save_to_database(trade),
-        calculate_moving_average(trade),
-        calculate_rsi(trade),
-        calculate_bollinger_bands(trade)
-    )
-
-# Placeholder for saving to database
-async def save_to_database(trade):
-    # Save trade data to database
-    pass
 
 # Placeholder for calculating moving average
 async def calculate_moving_average(trade):
