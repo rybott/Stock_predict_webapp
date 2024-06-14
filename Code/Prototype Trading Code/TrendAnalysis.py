@@ -54,7 +54,26 @@ class TrendAnalysis():
         # Calculate Bollinger Bands
         pass
 
+    def DumbtradeAnalysis(self):
+        # Looks at the last four candles, three increases
+        Last_Candles = 4
+
+        last_VWAPs = self.Buffer['vwap'].iloc[-Last_Candles:]
+        last_lows = self.Buffer['low'].iloc[-Last_Candles:]
+
+        VWAP_differences = last_VWAPs.diff().dropna()
+        lows_differences = last_lows.diff().dropna()
+
+        NumberOf_Positives = (VWAP_differences > 0).sum() + (lows_differences > 0).sum()
+        
+        return NumberOf_Positives >= 5
+
+
     def TradeAnalysis(self):
+
+        '''
+        Good Trade Analysis
+
         if not self.calculate_bollinger_bands():
             self.TradeStat = False
             return self.TradeStat
@@ -69,40 +88,51 @@ class TrendAnalysis():
 
         self.TradeStat = True
         return self.TradeStat
+        
+        '''
 
+        self.TradeStat = self.DumbtradeAnalysis()
+        return self.TradeStat
 
 
 
 class ProtoflioStatus():
     def __init__(self):
-        pass
+        self.counter = 1
 
     def Tru(self, client):
-        positions = client.get_all_positions()
-        Quantity = float(positions[0].qty)
-        PL_percent = float(positions[0].unrealized_intraday_plpc)
-
-        # If Loosing Money Close all Positions (Which is just BTC)
-        if PL_percent < -.02: # Two Percent
-            req = MarketOrderRequest(
-            symbol = symbol,
-            qty = Quantity,
-            side = OrderSide.SELL,
-            type = OrderType.MARKET,
-            time_in_force = TimeInForce.DAY)
-            res = client.submit_order(req)
-            return False
-        else:
+        self.positions = client.get_all_positions()
+        if self.counter == 1:
+            self.counter = self.counter + 1
             return True
-            
+        elif len(self.positions) == 0:
+            self.counter = self.counter + 1
+            return True
+        else:
+            self.counter = self.counter + 1
+            Quantity = float(self.positions[0].qty)
+            PL_percent = float(self.positions[0].unrealized_intraday_plpc)
 
+            # If Loosing Money Close all Positions (Which is just BTC)
+            if PL_percent < -.02: # Two Percent
+                req = MarketOrderRequest(
+                    symbol = symbol,
+                    qty = Quantity,
+                    side = OrderSide.SELL,
+                    type = OrderType.MARKET,
+                    time_in_force = TimeInForce.GTC)
+                self.res = client.submit_order(req)
+                return False
+            else:
+                return True
 
-
-api_key = "PKYBOP7WCHJG8U2UWBVB"
-secret_key = "WyL7X8v4OBkuFFT4urOPMLZ9EG88HBAFxWRsuRE5"
+api_key = "PKCCX01QH75BPKJDIR4Y"
+secret_key = "xkJ9Ylyc6phDftfiPXL11sMMpT2vzgEnL2BudWJA"
 paper = True 
+trade_client = TradingClient(api_key=api_key, secret_key=secret_key, paper=paper, url_override=None)
 
 Buffer = TradeBuffer()
+PortflioStatus = ProtoflioStatus()
 symbol = "BTC/USD"
 trade_client = TradingClient(api_key=api_key, secret_key=secret_key, paper=paper, url_override=None)
 
@@ -115,22 +145,20 @@ async def process_trade(trade):
     
     Buffer_df = Buffer.get_data()
 
-    Portfolio = ProtoflioStatus().Tru()
+    Portfolio = PortflioStatus.Tru(trade_client)
 
     if len(Buffer_df) >=15:
         Analysis = TrendAnalysis(Buffer_df).TradeAnalysis()
 
         if Portfolio == True and Analysis == True:
             req = MarketOrderRequest(
-            symbol = symbol,
-            qty = 0.01,
-            side = OrderSide.BUY,
-            type = OrderType.MARKET,
-            time_in_force = TimeInForce.DAY)
-
-        res = trade_client.submit_order(req)
-
-        print("Made Trade")
+                symbol = symbol,
+                notional = 10,
+                side = OrderSide.BUY,
+                type = OrderType.MARKET,
+                time_in_force = TimeInForce.GTC)
+            trade_client.submit_order(req)
+            print("Made Trade")
 
     t2 = time.time()- t1
     print(t2)
