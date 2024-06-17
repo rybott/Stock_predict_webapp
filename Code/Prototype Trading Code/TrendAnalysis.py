@@ -83,7 +83,7 @@ class ProtoflioStatus():
         PL_percent = float(positions[0].unrealized_intraday_plpc)
 
         # If Loosing Money Close all Positions (Which is just BTC)
-        if PL_percent < -.02: # Two Percent
+        if PL_percent < .05: # Two Percent
             req = MarketOrderRequest(
             symbol = symbol,
             qty = Quantity,
