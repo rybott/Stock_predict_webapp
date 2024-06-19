@@ -32,7 +32,7 @@ class TradeBuffer:
         return self.buffer
     
     def get_price(self, candle):
-        self.price = candle['high']
+        self.price = candle['low']
         return self.price
 
 class TrendAnalysis():
@@ -93,12 +93,25 @@ class TrendAnalysis():
 
         self.TradeStat = self.DumbtradeAnalysis()
         return self.TradeStat
+    
 
 
 
 class ProtoflioStatus():
     def __init__(self):
         self.counter = 1
+        self.buffer = pd.DataFrame(columns=["Position_ID","EntryTime", "ExitTime", "Ticker", "Entry_Price", "Purchase Price", "Quantity", "Adj_Basis", "Current_Price", "FeeAdj_Basis", "Sell"])
+        
+    def RecordPurchase(ticker):
+        Current_Time = time.strftime("%Y-%h-%d %H:%M:%S",time.localtime())
+        EntryTime = pd.to_datetime(Current_Time)
+        symbol = ticker
+        # Figure out how to get all the trades you made not poisitions(There is only one position)
+        pass
+
+    def GetPositionData():
+    # This is where you will calculate the P/L
+        pass
 
     def Tru(self, client):
         self.positions = client.get_all_positions()
@@ -125,6 +138,21 @@ class ProtoflioStatus():
                 return False
             else:
                 return True
+            
+    def MakeMarketOrder(Ticker,Amount):
+        req = MarketOrderRequest(
+                symbol = Ticker,
+                notional = Amount,
+                side = OrderSide.BUY,
+                type = OrderType.MARKET,
+                time_in_force = TimeInForce.GTC)
+        trade_client.submit_order(req)
+        print("Made Trade")
+
+
+
+
+
 
 api_key = "PKCCX01QH75BPKJDIR4Y"
 secret_key = "xkJ9Ylyc6phDftfiPXL11sMMpT2vzgEnL2BudWJA"
@@ -136,6 +164,7 @@ PortflioStatus = ProtoflioStatus()
 symbol = "BTC/USD"
 trade_client = TradingClient(api_key=api_key, secret_key=secret_key, paper=paper, url_override=None)
 
+Portfolio = PortflioStatus()
 
 # Function to process each trade
 async def process_trade(trade):
@@ -145,20 +174,14 @@ async def process_trade(trade):
     
     Buffer_df = Buffer.get_data()
 
-    Portfolio = PortflioStatus.Tru(trade_client)
+    
+    Portfolio_Flag = Portfolio.Tru(trade_client)
 
     if len(Buffer_df) >=15:
-        Analysis = TrendAnalysis(Buffer_df).TradeAnalysis()
+        Analysis_Flag = TrendAnalysis(Buffer_df).TradeAnalysis()
 
-        if Portfolio == True and Analysis == True:
-            req = MarketOrderRequest(
-                symbol = symbol,
-                notional = 10,
-                side = OrderSide.BUY,
-                type = OrderType.MARKET,
-                time_in_force = TimeInForce.GTC)
-            trade_client.submit_order(req)
-            print("Made Trade")
+        if Portfolio_Flag == True and Analysis_Flag == True:
+            Portfolio.MakeMarketOrder(10)
 
     t2 = time.time()- t1
     print(t2)
