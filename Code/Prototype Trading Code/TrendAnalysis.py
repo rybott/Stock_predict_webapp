@@ -100,6 +100,8 @@ class ProtoflioStatus():
     def __init__(self):
         self.counter = 1
 
+    def
+
     def Tru(self, client):
         self.positions = client.get_all_positions()
         if self.counter == 1:
