@@ -1,1 +1,1 @@
-{'event_type': 'XAS', 'pair': 'BTC-USD', 'open': 66696.8, 'close': 66696.8, 'high': 66696.8, 'low': 66696.8, 'volume': 0.00130128, 'vwap': 66696.8, 'start_timestamp': 1718340118000, 'end_timestamp': 1718340119000, 'avg_trade_size': 0},
+{'event_type': 'XAS', 'pair': 'BTC-USD', 'open': 66620.79, 'close': 66613.97, 'high': 66620.79, 'low': 66613.97, 'volume': 0.0082638, 'vwap': 66617.4465, 'start_timestamp': 1718662591000, 'end_timestamp': 1718662592000, 'avg_trade_size': 0},
