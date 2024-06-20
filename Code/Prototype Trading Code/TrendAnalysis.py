@@ -1,16 +1,19 @@
 import asyncio
-from polygon.websocket.models import CryptoTrade
 import pandas as pd
 import time
-
-import alpaca
 from alpaca.trading.client import TradingClient
 from alpaca.trading.enums import OrderType, TimeInForce, OrderSide
-from alpaca.trading.requests import MarketOrderRequest
+from alpaca.trading.requests import MarketOrderRequest, GetOrdersRequest, QueryOrderStatus
+import os
+from dotenv import load_dotenv
+
+load_dotenv()
 
 class TradeBuffer:
     def __init__(self, size=15, dump_file='data.csv'):
         self.size = size
+        self.Cached_Price = .0001 # Placeholder
+        self.Max_Price = 0 # Placeholder
         self.buffer = pd.DataFrame(columns=["event_type", "pair", "open", "close", "high", "low", "volume", "vwap", "start_timestamp", "end_timestamp", "avg_trade_size"])  # Adjusted columns
         open('data.txt', 'w').close()
 
@@ -31,9 +34,21 @@ class TradeBuffer:
     def get_data(self):
         return self.buffer
     
-    def get_price(self, candle):
-        self.price = candle['low']
-        return self.price
+    def Update_Cache_Price(self, price):
+        self.Cached_Price = price
+    
+    def Get_Cached_Price(self):
+        return self.Cached_Price
+    
+    def Reset_Max_Price(self, price):
+        self.Max_Price = price
+
+    def Update_Max_Price(self, price):
+        if price > self.Max_Price:
+            self.Max_Price = price
+
+    def Get_Max_TrailingLoss(self):
+        return self.Max_Price - (self.Max_Price*.01)
 
 class TrendAnalysis():
     def __init__(self, buffer_df):
@@ -100,36 +115,63 @@ class TrendAnalysis():
 class ProtoflioStatus():
     def __init__(self):
         self.counter = 1
-        self.buffer = pd.DataFrame(columns=["Position_ID","EntryTime", "ExitTime", "Ticker", "Entry_Price", "Purchase Price", "Quantity", "Adj_Basis", "Current_Price", "FeeAdj_Basis", "Sell"])
+        self.CurrentOrders = pd.DataFrame(columns=["EntryTime", "symbol", "PurchaseStockPriceActual", 
+                                              "PurchaseStockPriceAvg", "quantity",
+                                              "PurchasePrice", "Adj_CostBasis",
+                                              "RollingCostBasis","Sell"])
         
-    def RecordPurchase(ticker):
-        Current_Time = time.strftime("%Y-%h-%d %H:%M:%S",time.localtime())
-        EntryTime = pd.to_datetime(Current_Time)
-        symbol = ticker
-        # Figure out how to get all the trades you made not poisitions(There is only one position)
+
+    def RecordOrder(self,ticker, client, price):
+
+        req = GetOrdersRequest(
+                status = QueryOrderStatus.ALL,
+                symbols = [ticker],
+                side = "buy")
+        last_order = client.get_orders(req)[0]
+        try:
+            self.EntryTime = pd.Timestamp.now()
+            self.symbol = ticker
+            self.PurchaseStockPriceActual = price
+            self.PurchaseStockPriceAvg = float(last_order.filled_avg_price)
+            self.quantity = float(last_order.filled_qty)
+            self.PurchasePrice = float(last_order.notional)
+            self.Adj_CostBasis = self.PurchaseStockPriceAvg / self.quantity
+            self.RollingCostBasis = price 
+            self.Sell = False
+
+            next_index = len(self.CurrentOrders)
+
+            self.CurrentOrders.loc[next_index] = [self.EntryTime, self.symbol, self.PurchaseStockPriceActual, 
+                                                self.PurchaseStockPriceAvg, self.quantity,
+                                                self.PurchasePrice, self.Adj_CostBasis,
+                                                self.RollingCostBasis,self.Sell]
+        except:
+            print("Failed to Record Order")
+        
+    def DropOrder(self):
         pass
 
-    def GetPositionData():
-    # This is where you will calculate the P/L
-        pass
-
-    def
-
-    def Tru(self, client):
-        self.positions = client.get_all_positions()
-        if self.counter == 1:
-            self.counter = self.counter + 1
-            return True
-        elif len(self.positions) == 0:
-            self.counter = self.counter + 1
+    def PositionAnalysis(self, client, Max_Price, New_price, buffer):
+        '''
+        # For the Future
+        1. Apply a function to every row of the dataframe to see IF current Price < Rolling Cost Basis = Sell == True
+        2. Otherwise Update rolling cost Basis
+        '''
+        if New_price >= Max_Price:
             return True
         else:
-            self.counter = self.counter + 1
-            Quantity = float(self.positions[0].qty)
-            PL_percent = float(self.positions[0].unrealized_intraday_plpc)
-
-            # If Loosing Money Close all Positions (Which is just BTC)
-            if PL_percent < -.02: # Two Percent
+            self.positions = client.get_all_positions()
+            if self.counter == 1:
+                self.counter = self.counter + 1
+                return True
+            elif len(self.positions) == 0:
+                self.counter = self.counter + 1
+                return True
+            else:
+                buffer.Reset_Max_Price(New_price)
+                print("Sold Positions")
+                self.counter = self.counter + 1
+                Quantity = float(self.positions[0].qty)
                 req = MarketOrderRequest(
                     symbol = symbol,
                     qty = Quantity,
@@ -137,36 +179,33 @@ class ProtoflioStatus():
                     type = OrderType.MARKET,
                     time_in_force = TimeInForce.GTC)
                 self.res = client.submit_order(req)
-                return False
-            else:
-                return True
+                return False   
+                 
             
-    def MakeMarketOrder(Ticker,Amount):
+    def MakeMarketOrder(self,Ticker,Amount, Client, Price):
+        t1 = time.time()
+        print("Made Trade")
         req = MarketOrderRequest(
                 symbol = Ticker,
                 notional = Amount,
                 side = OrderSide.BUY,
                 type = OrderType.MARKET,
                 time_in_force = TimeInForce.GTC)
-        trade_client.submit_order(req)
-        print("Made Trade")
+        Client.submit_order(req)
+        self.RecordOrder(Ticker,Client, Price)
+        t2 = t1 - time.time()
+        
 
-
-
-
-
-
-api_key = "PKCCX01QH75BPKJDIR4Y"
-secret_key = "xkJ9Ylyc6phDftfiPXL11sMMpT2vzgEnL2BudWJA"
+api_key = os.getenv("Alpaca_API")
+secret_key = os.getenv("Alpaca_Secret")
 paper = True 
 trade_client = TradingClient(api_key=api_key, secret_key=secret_key, paper=paper, url_override=None)
 
 Buffer = TradeBuffer()
-PortflioStatus = ProtoflioStatus()
+PortfolioStatus = ProtoflioStatus()
 symbol = "BTC/USD"
 trade_client = TradingClient(api_key=api_key, secret_key=secret_key, paper=paper, url_override=None)
 
-Portfolio = PortflioStatus()
 
 # Function to process each trade
 async def process_trade(trade):
@@ -175,17 +214,24 @@ async def process_trade(trade):
     Buffer.dump_data(trade)
     
     Buffer_df = Buffer.get_data()
+    price = Buffer.Get_Cached_Price()
+    New_price = trade['low']
 
     
-    Portfolio_Flag = Portfolio.Tru(trade_client)
+    Max_Price = Buffer.Get_Max_TrailingLoss()
+    Buffer.Update_Max_Price(trade['low'])
+
+
+    Portfolio_Flag = PortfolioStatus.PositionAnalysis(trade_client, Max_Price, New_price, Buffer)
 
     if len(Buffer_df) >=15:
         Analysis_Flag = TrendAnalysis(Buffer_df).TradeAnalysis()
 
         if Portfolio_Flag == True and Analysis_Flag == True:
-            Portfolio.MakeMarketOrder(10)
+            PortfolioStatus.MakeMarketOrder(symbol, 10, trade_client, price)
+    
+    Buffer.Update_Cache_Price(New_price)
 
     t2 = time.time()- t1
-    print(t2)
-
+    print(f"{t2} Seconds | Price = {New_price} | Max_Price = {Max_Price}")
 
