@@ -43,11 +43,9 @@ class TradeBuffer:
     def Reset_Max_Price(self, price):
         self.Max_Price = price
 
-    def Update_Max_Price(self, price):
+    def Get_Max_TrailingLoss(self, price):
         if price > self.Max_Price:
             self.Max_Price = price
-
-    def Get_Max_TrailingLoss(self):
         return self.Max_Price - (self.Max_Price*.01)
 
 class TrendAnalysis():
@@ -182,7 +180,7 @@ class ProtoflioStatus():
                 return False   
                  
             
-    def MakeMarketOrder(self,Ticker,Amount, Client, Price):
+    def MakeMarketOrder(self,Ticker, Client, Price, Amount):
         t1 = time.time()
         print("Made Trade")
         req = MarketOrderRequest(
@@ -203,7 +201,7 @@ trade_client = TradingClient(api_key=api_key, secret_key=secret_key, paper=paper
 
 Buffer = TradeBuffer()
 PortfolioStatus = ProtoflioStatus()
-symbol = "BTC/USD"
+symbol = os.getenv("Symbol")
 trade_client = TradingClient(api_key=api_key, secret_key=secret_key, paper=paper, url_override=None)
 
 
@@ -218,20 +216,20 @@ async def process_trade(trade):
     New_price = trade['low']
 
     
-    Max_Price = Buffer.Get_Max_TrailingLoss()
-    Buffer.Update_Max_Price(trade['low'])
+    Trailing_Price = Buffer.Get_Max_TrailingLoss(trade['low'])
+    Max_Price = Trailing_Price / .99
 
 
-    Portfolio_Flag = PortfolioStatus.PositionAnalysis(trade_client, Max_Price, New_price, Buffer)
+    Portfolio_Flag = PortfolioStatus.PositionAnalysis(trade_client, Trailing_Price, New_price, Buffer)
 
     if len(Buffer_df) >=15:
         Analysis_Flag = TrendAnalysis(Buffer_df).TradeAnalysis()
 
         if Portfolio_Flag == True and Analysis_Flag == True:
-            PortfolioStatus.MakeMarketOrder(symbol, 10, trade_client, price)
+            PortfolioStatus.MakeMarketOrder(symbol, trade_client, price, Amount= 10,)
     
     Buffer.Update_Cache_Price(New_price)
 
     t2 = time.time()- t1
-    print(f"{t2} Seconds | Price = {New_price} | Max_Price = {Max_Price}")
+    print(f"{t2} Seconds | Price = {New_price} | Max_Price = {Max_Price} | Trailing_Price = {Trailing_Price}")
 

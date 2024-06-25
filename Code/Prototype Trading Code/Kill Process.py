@@ -16,7 +16,7 @@ api_key = os.getenv("Alpaca_API")
 secret_key = os.getenv("Alpaca_Secret")
 paper = True 
 client = TradingClient(api_key=api_key, secret_key=secret_key, paper=paper, url_override=None)
-symbol = "BTC/USD"
+symbol = os.getenv("Symbol")
 
 positions = client.get_all_positions()
             

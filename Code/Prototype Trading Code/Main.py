@@ -10,7 +10,7 @@ load_dotenv()
 
 API_KEY = os.getenv("Websocket_API")
 
-ws = WebSocketClient(api_key=API_KEY,market="crypto",subscriptions=["XAS.BTC-USD"])
+ws = WebSocketClient(api_key=API_KEY,market="crypto",subscriptions=["XAS.AAVE-USD"])
 
 print("Trading will Comense Now")
 
