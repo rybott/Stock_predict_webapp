@@ -1,25 +1,16 @@
 import asyncio
 from polygon import WebSocketClient
-from polygon.websocket.models import WebSocketMessage, CryptoTrade
+from polygon.websocket.models import WebSocketMessage
 from typing import List
-from polygon import RESTClient
-import pandas as pd
-import ast
-
-import threading
-
+import os
+from dotenv import load_dotenv
 from TrendAnalysis import process_trade
 
-API_KEY = "s2zC3SQEf3MgBQzTygqvYc9QfLNI_ABq"
+load_dotenv()
 
-ws = WebSocketClient(api_key=API_KEY,market="crypto",subscriptions=["XAS.BTC-USD"])
+API_KEY = os.getenv("Websocket_API")
 
-stop_event = threading.Event()
-
-
-
-#client = RESTClient(api_key=API_KEY)
-#client.get_snapshot_crypto_book(ticker="BTC-USD")
+ws = WebSocketClient(api_key=API_KEY,market="crypto",subscriptions=["XAS.AAVE-USD"])
 
 print("Trading will Comense Now")
 
@@ -28,15 +19,6 @@ async def handle_msg(msg: List[WebSocketMessage]):
     for m in msg:
         m_dict = m.__dict__
         await process_trade(m_dict)
-
-async def Reporting():
-    with open('data.txt', 'r') as file:
-        content = file.read()
-    Dict_list = ast.literal_eval(content)
-    df = pd.DataFrame(Dict_list)
-
-    print(df.info())
-    print(df.head())
 
 # Function to run the WebSocket client
 async def run_ws():
