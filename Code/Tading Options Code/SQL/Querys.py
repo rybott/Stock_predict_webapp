@@ -1,9 +1,6 @@
-import duckdb as ddb
-
-con = ddb.connect('OptionsTrading.duckdb')
 
 class DBconn():
-    def __init__(self):
+    def __init__(self,con):
         con.execute('''
         CREATE TABLE IF NOT EXISTS Options (
             contractID VARCHAR,
