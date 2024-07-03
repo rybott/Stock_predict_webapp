@@ -80,3 +80,4 @@ for _ in range(180):
     
     time.sleep(5)
 
+con.close()
