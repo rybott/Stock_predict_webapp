@@ -27,13 +27,15 @@ class DBconn():
             high FLOAT,
             low FLOAT,
             close FLOAT,
-            volume FLOAT
+            volume FLOAT,
         )''')
 
+        self.con = con
+
     
-    def InsertOptionQry(df):
-        con.register('df', df)
-        con.execute(
+    def InsertOptionQry(self,df):
+        self.con.register('df', df)
+        self.con.execute(
             '''
             INSERT INTO Options
             SELECT 
@@ -56,9 +58,9 @@ class DBconn():
             WHERE Logtime NOT IN (SELECT Logtime FROM Options)
             ''')
     
-    def InsertStockQry(df):
-        con.register('df', df)
-        con.execute(
+    def InsertStockQry(self,df):
+        self.con.register('df', df)
+        self.con.execute(
             '''
             INSERT INTO Stocks
             SELECT 
@@ -67,7 +69,7 @@ class DBconn():
                 "2. high" as high,
                 "3. low" as low, 
                 "4. close" as close, 
-                "5. volume" as volume
+                "5. volume" as volume,
             FROM df
             WHERE Timestamp NOT IN (SELECT Timestamp FROM Stocks)
             ''')
