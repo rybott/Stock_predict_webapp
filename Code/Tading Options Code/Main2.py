@@ -16,7 +16,7 @@ api_key = os.getenv("Alpha_API")
 symbol = 'AAPL'
 interval = '1'
 
-stock_api = f'https://www.alphavantage.co/query?function=TIME_SERIES_INTRADAY&symbol={symbol}&interval={interval}min&apikey={api_key}'
+stock_api = f'https://www.alphavantage.co/query?function=TIME_SERIES_INTRADAY&symbol={symbol}&interval={interval}min&entitlement=realtime&apikey={api_key}'
 options_api = f'https://www.alphavantage.co/query?function=REALTIME_OPTIONS&symbol={symbol}&apikey={api_key}'
 
 async def call_option_api(session):

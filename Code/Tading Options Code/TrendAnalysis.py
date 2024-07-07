@@ -41,7 +41,7 @@ class Stock_Analysis():
             return False
         
         # Check if the last two local minimums are increasing
-        Min_Test = local_mins['Local_Min'].iloc[-1] > local_mins['Local_Min'].iloc[-2]
+        Min_Test = local_mins['Local_Min'].iloc[0] > local_mins['Local_Min'].iloc[1]
         if Min_Test == False:
             return False
         else:
