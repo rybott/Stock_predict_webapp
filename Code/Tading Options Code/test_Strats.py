@@ -11,7 +11,7 @@ from SQL.Querys import DBconn
 #con = ddb.connect(r'C:\Design Folder\RBGithub\Trading_Algo_Data\testingalphaoptions.duckdb')
 #db = DBconn(con)
 
-date = '2024-07-05'
+date = '2024-07-08'
 
 # Get Data--------------------------------------------------------------
 
@@ -122,7 +122,7 @@ fig.add_trace(go.Scatter(x=trade_points['timestamp'], y=trade_points['close'], m
 
 # Update layout
 fig.update_layout(
-    title='Close Price, EMA8, and EMA100 over Time with Trade Signals',
+    title=f'Close Price, EMA8, and EMA100 over Time with Trade Signals {date}',
     xaxis_title='Timestamp',
     yaxis_title='Price',
     showlegend=True
