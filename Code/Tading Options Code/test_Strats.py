@@ -24,7 +24,7 @@ Increasing_Mins = 2
 
 #url = f"https://www.alphavantage.co/query?function=TIME_SERIES_INTRADAY&symbol={symbol}&interval=1min&month=2024-07&outputsize=full&apikey={api_key}"
 
-stock_api = f'https://www.alphavantage.co/query?function=TIME_SERIES_INTRADAY&symbol={symbol}&interval={interval}min&entitlement=realtime&outputsize=full&apikey={api_key}'
+stock_api = f'https://www.alphavantage.co/query?function=TIME_SERIES_INTRADAY&symbol={symbol}&interval={interval}min&month=2024-07&entitlement=realtime&outputsize=full&apikey={api_key}'
 
 
 r = requests.get(stock_api)
@@ -35,7 +35,8 @@ df = pd.DataFrame.from_dict(data, orient='index')
 
 df.index = pd.to_datetime(df.index)
 
-stock_df = df.loc[date]
+stock_df = df
+#stock_df = df.loc[date]
 
 new_column_names = ['open', 'high', 'low', 'close', 'volume']
 stock_df.columns = new_column_names
@@ -92,6 +93,8 @@ for index, row in Engulfing_df.iterrows():
             REC_df.at[index, 'Trade'] = True
 
 Tradable_df = REC_df[REC_df['Trade']]
+
+print(Tradable_df.info())
 
 # --------------------------------------------------------------------------------
 
