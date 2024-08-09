@@ -10,3 +10,4 @@ load_dotenv()
 api_key = os.getenv("Alpha_API")
 con = ddb.connect('datadump.duckdb')
 
+
